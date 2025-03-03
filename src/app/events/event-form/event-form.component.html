@@ -1,0 +1,35 @@
+<app-loader [isLoading]="isLoading"></app-loader>
+<div class="event-form-container">
+    <h2>{{ isEditMode ? 'Edit Event' : 'Create Event' }}</h2>
+  
+    <form [formGroup]="eventForm">
+      <div class="form-group">
+        <label>Event Name</label>
+        <input type="text" formControlName="name" required />
+      </div>
+  
+      <div class="form-group">
+        <label>Location</label>
+        <input type="text" formControlName="location" required />
+      </div>
+  
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" formControlName="date" required />
+      </div>
+      <div class="form-group">
+        <label>Participants</label>
+        <select formControlName="participants" multiple>
+          <option *ngFor="let user of usersList" [value]="user._id" (click)="addParticipient(user._id)">
+            {{ user.name }} ({{ user.email }})
+          </option>
+        </select>
+      </div>
+      
+      <div class="button-group">
+        <button type="submit" class="btn btn-success" (click)="saveEvent()">{{ isEditMode ? 'Update' : 'Create' }}</button>
+        <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+  

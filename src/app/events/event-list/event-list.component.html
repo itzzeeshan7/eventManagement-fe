@@ -1,0 +1,58 @@
+<app-loader [isLoading]="isLoading"></app-loader>
+<div class="event-container">
+  <div class="event-card">
+    <h2>Event List</h2>
+
+    <button *ngIf="!isAdmin" class="btn btn-success create-btn" (click)="openEventForm()">Create Event</button>
+
+    <div class="search-filter">
+      <input type="text" [(ngModel)]="searchQuery" (input)="filterEvents()" placeholder="Search events here" />
+      <select [(ngModel)]="selectedLocation" (change)="filterEvents()">
+        <option value="">All Locations</option>
+        <option *ngFor="let location of uniqueLocations" [value]="location">{{ location }}</option>
+      </select>
+      <input type="date" [(ngModel)]="selectedDate" (change)="filterEvents()" />
+    </div>
+
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let event of filteredEvents">
+        <div class="event-details">
+          <h5>{{ event.name }}</h5>
+          <p>{{ event.location }}</p>
+          <p>{{ event.date | date }}</p>
+          <p ><strong>Status:</strong> {{ event.status  }}</p>
+          <p ><strong>Created By:</strong> {{ event.ownerName }}</p>
+        </div>
+
+        <div class="event-actions">
+          <button *ngIf="!isAdmin && !isParticipant(event) && canJoin(event)" (click)="joinEvent(event._id)" class="btn btn-primary">
+            Join
+          </button>
+          
+          <button *ngIf="!isAdmin && isParticipant(event)" (click)="leaveEvent(event._id)" class="btn btn-danger">
+            Leave
+          </button>          
+
+          <button *ngIf="isAdmin && event.status!=='Approved'" (click)="approveEvent(event._id)" class="btn btn-info">Approve</button>
+          
+          <button *ngIf="isAdmin || isEventOwner(event)" (click)="editEvent(event)" class="btn btn-warning">Edit</button>
+          <button *ngIf="isAdmin || isEventOwner(event)" (click)="openModel(event._id)" class="btn btn-danger">Delete</button>
+        </div>
+      </li>
+    </ul>
+
+    <div class="pagination">
+      <button (click)="prevPage()" [disabled]="currentPage === 1">Prev</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+    </div>
+  </div>
+</div>
+<app-confirmation-modal
+*ngIf="showDeleteConfirmation"
+[message]="'Are you sure you want to Delete Event?'"
+[title]="'Confirm Delete?'"
+[textButton]="'Delete'"
+(confirm)="confirmDelete()"
+(cancel)="showDeleteConfirmation = false">
+</app-confirmation-modal>
