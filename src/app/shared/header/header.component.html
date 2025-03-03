@@ -1,0 +1,17 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Event Management</a>
+  
+      <button class="btn text-light" (click)="openLogoutModal()">Logout</button>
+    </div>
+  </nav>
+  
+  <app-confirmation-modal
+  *ngIf="showDeleteConfirmation"
+  [message]="'Are you sure you want to Logout?'"
+  [title]="'Confirm Logout?'"
+  [textButton]="'Logout'"
+  (confirm)="confirmDelete()"
+  (cancel)="showDeleteConfirmation = false">
+  </app-confirmation-modal>
+  
